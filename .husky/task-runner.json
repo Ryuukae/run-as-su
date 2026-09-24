@@ -1,0 +1,9 @@
+{
+  "tasks": [
+    {
+      "name": "commitlint",
+      "command": "dotnet",
+      "args": ["husky", "exec", ".husky/csx/commitlint.csx", "--args", "${args}"]
+    }
+  ]
+}
