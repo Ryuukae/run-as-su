@@ -129,7 +129,12 @@
         </StatusBar>
 
         <!-- Massive DataGrid (NirSoft Style) -->
-        <DataGrid ItemsSource="{Binding Policies}" SelectedItem="{Binding SelectedPolicy}">
+                <DataGrid ItemsSource="{Binding Policies}" SelectedItem="{Binding SelectedPolicy}">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="⚡ Create UAC Bypass Shortcut" Command="{Binding CreateUacShortcutCommand}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Icon" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>

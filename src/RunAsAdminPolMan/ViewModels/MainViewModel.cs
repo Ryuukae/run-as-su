@@ -19,6 +19,8 @@ public partial class MainViewModel : ObservableObject
     private readonly IRegistryService _registryService;
     private readonly IAppMetadataService _metadataService;
     private readonly IFileDialogService _fileDialogService;
+    private readonly IUacBypassOrchestrator _uacOrchestrator;
+    private readonly ISettingsService _settingsService;
 
     [ObservableProperty]
     private ObservableCollection<AppPolicy> _policies = new();
@@ -39,12 +41,16 @@ public partial class MainViewModel : ObservableObject
         ILogger<MainViewModel> logger,
         IRegistryService registryService,
         IAppMetadataService metadataService,
-        IFileDialogService fileDialogService)
+        IFileDialogService fileDialogService,
+        IUacBypassOrchestrator uacOrchestrator,
+        ISettingsService settingsService)
     {
         _logger = logger;
         _registryService = registryService;
         _metadataService = metadataService;
         _fileDialogService = fileDialogService;
+        _uacOrchestrator = uacOrchestrator;
+        _settingsService = settingsService;
 
         _logger.LogInformation("MainViewModel initialized.");
     }
@@ -188,6 +194,44 @@ public partial class MainViewModel : ObservableObject
         else
         {
             _logger.LogDebug("File dialog canceled or empty.");
+        }
+    }
+    /// <summary>
+    /// Generates a UAC bypass shortcut for the selected policy.
+    /// </summary>
+    [RelayCommand]
+    public async Task CreateUacShortcutAsync()
+    {
+        if (SelectedPolicy == null)
+        {
+            StatusMessage = "Please select a policy to create a UAC bypass shortcut.";
+            return;
+        }
+
+        StatusMessage = "Creating UAC Bypass shortcut...";
+
+        var settingsResult = await _settingsService.GetSettingsAsync();
+        string defaultPath = settingsResult.IsSuccess ? settingsResult.Value.DefaultShortcutLocation : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+        string? shortcutPath = _fileDialogService.ShowSaveFileDialog("Save UAC Bypass Shortcut", defaultPath, SelectedPolicy.ProductName + ".lnk", "Shortcut Files (*.lnk)|*.lnk");
+
+        if (string.IsNullOrWhiteSpace(shortcutPath))
+        {
+            StatusMessage = "Shortcut creation cancelled.";
+            return;
+        }
+
+        var result = await _uacOrchestrator.GenerateUacBypassShortcutAsync(SelectedPolicy, System.IO.Path.GetDirectoryName(shortcutPath) ?? defaultPath);
+
+        if (result.IsSuccess)
+        {
+            StatusMessage = "UAC Bypass Shortcut successfully created at: " + shortcutPath;
+            _logger.LogInformation("UAC Bypass Shortcut successfully generated for {Product} at {Path}", SelectedPolicy.ProductName, shortcutPath);
+        }
+        else
+        {
+            StatusMessage = "Failed to create shortcut: " + result.Error?.Message;
+            _logger.LogError("UAC Bypass failed: {Error}", result.Error?.Message);
         }
     }
 }
