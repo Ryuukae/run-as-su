@@ -2,6 +2,11 @@
   "name": "runas-admin-pol-man",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "lint:commit": "dotnet husky run --name \"commitlint\" --args commit_msg.txt",
+    "lint:code": "dotnet format",
+    "build": "dotnet build"
+  },
   "devDependencies": {
     "semantic-release": "^24.0.0",
     "@semantic-release/changelog": "^6.0.0",
