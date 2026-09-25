@@ -1,8 +1,14 @@
 <Application x:Class="RunAsAdminPolMan.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:RunAsAdminPolMan">
+             xmlns:local="clr-namespace:RunAsAdminPolMan"
+             xmlns:converters="clr-namespace:RunAsAdminPolMan.Converters">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Space for future external resource dictionaries -->
+            </ResourceDictionary.MergedDictionaries>
+            <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter" />
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
