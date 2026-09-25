@@ -1,12 +1,132 @@
-﻿<Window x:Class="RunAsAdminPolMan.MainWindow"
+<Window x:Class="RunAsAdminPolMan.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RunAsAdminPolMan"
+        xmlns:viewmodels="clr-namespace:RunAsAdminPolMan.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="RunAsAdmin Policy Manager" Height="600" Width="900"
+        Background="#282828" Foreground="#ebdbb2"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <!-- Gruvbox DataGrid Styling -->
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="#282828"/>
+            <Setter Property="Foreground" Value="#ebdbb2"/>
+            <Setter Property="RowBackground" Value="#282828"/>
+            <Setter Property="AlternatingRowBackground" Value="#3c3836"/>
+            <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#504945"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="RowHeaderWidth" Value="0"/>
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+        </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#3c3836"/>
+            <Setter Property="Foreground" Value="#ebdbb2"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="BorderBrush" Value="#504945"/>
+        </Style>
+        <Style TargetType="DataGridCell">
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#458588"/>
+                    <Setter Property="Foreground" Value="#ebdbb2"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
-    </Grid>
+        <Style TargetType="Menu">
+            <Setter Property="Background" Value="#3c3836"/>
+            <Setter Property="Foreground" Value="#ebdbb2"/>
+            <Setter Property="Padding" Value="2"/>
+        </Style>
+        <Style TargetType="MenuItem">
+            <Setter Property="Foreground" Value="#ebdbb2"/>
+        </Style>
+
+        <Style TargetType="ToolBar">
+            <Setter Property="Background" Value="#3c3836"/>
+            <Setter Property="Foreground" Value="#ebdbb2"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#504945"/>
+            <Setter Property="Foreground" Value="#ebdbb2"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        
+        <Style TargetType="StatusBar">
+            <Setter Property="Background" Value="#3c3836"/>
+            <Setter Property="Foreground" Value="#ebdbb2"/>
+            <Setter Property="Padding" Value="4"/>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel>
+        <!-- Menu Bar -->
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="Add Policy..." Command="{Binding LoadPoliciesCommand}"/> <!-- Will wire to Add via dialog later -->
+                <MenuItem Header="Remove Policy" Command="{Binding RemovePolicyCommand}"/>
+                <Separator Background="#504945"/>
+                <MenuItem Header="E_xit"/>
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="Refresh" Command="{Binding LoadPoliciesCommand}"/>
+                <MenuItem Header="Toggle Scope (HKCU / HKLM)" Command="{Binding ToggleScopeCommand}"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="About"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- ToolBar -->
+        <ToolBarTray DockPanel.Dock="Top" Background="#3c3836">
+            <ToolBar>
+                <Button Content="Refresh" Command="{Binding LoadPoliciesCommand}"/>
+                <Button Content="Remove Selected" Command="{Binding RemovePolicyCommand}"/>
+                <Separator/>
+                <Button Content="Toggle Scope" Command="{Binding ToggleScopeCommand}"/>
+                <TextBlock VerticalAlignment="Center" Margin="8,0,0,0" Foreground="#b8bb26" Text="{Binding CurrentScope, StringFormat='Current Scope: {0}'}"/>
+            </ToolBar>
+        </ToolBarTray>
+
+        <!-- Status Bar -->
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusMessage}"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock Text="{Binding Policies.Count, StringFormat='Items: {0}'}"/>
+            </StatusBarItem>
+        </StatusBar>
+
+        <!-- Massive DataGrid (NirSoft Style) -->
+        <DataGrid ItemsSource="{Binding Policies}" SelectedItem="{Binding SelectedPolicy}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Scope" Binding="{Binding Scope}" Width="Auto"/>
+                <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="Auto"/>
+                <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" Width="Auto"/>
+                <DataGridTextColumn Header="File Path" Binding="{Binding FilePath}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
 </Window>

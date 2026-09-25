@@ -19,8 +19,12 @@ public partial class MainWindow : Window
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindow"/> class.
     /// </summary>
-    public MainWindow()
+    public MainWindow(RunAsAdminPolMan.ViewModels.MainViewModel viewModel)
     {
         InitializeComponent();
+        DataContext = viewModel;
+        
+        // Auto-load policies on startup securely through the IAsyncRelayCommand
+        Loaded += async (s, e) => await viewModel.LoadPoliciesCommand.ExecuteAsync(null);
     }
 }
