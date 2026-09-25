@@ -2,6 +2,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RunAsAdminPolMan.Core\RunAsAdminPolMan.Core.csproj" />
+    <ProjectReference Include="..\RunAsAdminPolMan.Infrastructure\RunAsAdminPolMan.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
   </ItemGroup>
 
   <PropertyGroup>
