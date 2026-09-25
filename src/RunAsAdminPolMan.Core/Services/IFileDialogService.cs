@@ -14,4 +14,10 @@ public interface IFileDialogService
     /// Prompts the user to save a file.
     /// </summary>
     string? ShowSaveFileDialog(string title, string defaultPath, string defaultFileName, string filter);
+    /// <summary>
+    /// Opens a native folder selection dialog.
+    /// </summary>
+    /// <param name="defaultPath">The initial directory to open to.</param>
+    /// <returns>The selected folder path, or null if canceled.</returns>
+    string? ShowOpenFolderDialog(string defaultPath);
 }
