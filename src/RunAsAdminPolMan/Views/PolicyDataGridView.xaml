@@ -27,7 +27,13 @@
                 <DataGridTextColumn Header="Scope" Binding="{Binding Scope}" Width="Auto"/>
                 <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="Auto"/>
                 <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" Width="Auto"/>
-                <DataGridTextColumn Header="File Path" Binding="{Binding FilePath}" Width="*"/>
+                <DataGridTextColumn Header="File Path" Binding="{Binding FilePath}" Width="*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontFamily" Value="Consolas" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
