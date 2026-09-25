@@ -7,7 +7,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "dotnet publish src/RunAsAdminPolMan/RunAsAdminPolMan.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:Version=${nextRelease.version} -o ./publish"
+        "prepareCmd": "pwsh .github/scripts/publish.ps1 -Version ${nextRelease.version}"
       }
     ],
     [
@@ -21,7 +21,7 @@
       "@semantic-release/github",
       {
         "assets": [
-          {"path": "publish/RunAsAdminPolMan.exe", "label": "RunAsAdmin Policy Manager (.exe)"}
+          {"path": "RunAsAdminPolMan.zip", "label": "RunAsAdmin Policy Manager (Zip Archive)"}
         ]
       }
     ]
