@@ -1,0 +1,27 @@
+<UserControl x:Class="RunAsAdminPolMan.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Text="Settings Configuration" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+        
+        <TextBlock Grid.Row="1" Text="Default UAC Shortcut Export Directory:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,20">
+            <TextBox Text="{Binding DefaultShortcutLocation, UpdateSourceTrigger=PropertyChanged}" Width="400" Margin="0,0,10,0" Padding="4" Background="#3c3836" Foreground="#ebdbb2" BorderBrush="#504945"/>
+            <Button Content="Browse..." Command="{Binding BrowseShortcutLocationCommand}" Padding="10,4"/>
+        </StackPanel>
+        
+        <Button Grid.Row="3" Content="Save Settings" Command="{Binding SaveSettingsCommand}" Width="150" HorizontalAlignment="Left" Padding="10,8" Background="#458588"/>
+    </Grid>
+</UserControl>

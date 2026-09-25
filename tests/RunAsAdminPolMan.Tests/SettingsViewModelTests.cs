@@ -19,13 +19,15 @@ public class SettingsViewModelTests
 {
     private readonly Mock<ISettingsService> _mockSettingsService;
     private readonly Mock<ILogger<SettingsViewModel>> _mockLogger;
+    private readonly Mock<IFileDialogService> _mockFileDialogService;
     private readonly SettingsViewModel _viewModel;
 
     public SettingsViewModelTests()
     {
         _mockSettingsService = new Mock<ISettingsService>();
         _mockLogger = new Mock<ILogger<SettingsViewModel>>();
-        _viewModel = new SettingsViewModel(_mockSettingsService.Object, _mockLogger.Object);
+        _mockFileDialogService = new Mock<IFileDialogService>();
+        _viewModel = new SettingsViewModel(_mockSettingsService.Object, _mockLogger.Object, _mockFileDialogService.Object);
     }
 
     [Fact]

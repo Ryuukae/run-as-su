@@ -77,6 +77,7 @@ public partial class App : Application
 
                 // Register ViewModels
                 services.AddSingleton<RunAsAdminPolMan.ViewModels.MainViewModel>();
+                services.AddSingleton<RunAsAdminPolMan.ViewModels.SettingsViewModel>();
 
                 // Register Views
                 services.AddTransient<MainWindow>();
