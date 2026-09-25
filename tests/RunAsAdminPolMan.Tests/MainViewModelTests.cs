@@ -38,7 +38,7 @@ public class MainViewModelTests
         _mockSettingsService = new Mock<ISettingsService>();
 
         var mockSettingsLogger = new Mock<ILogger<SettingsViewModel>>();
-        var settingsViewModel = new SettingsViewModel(_mockSettingsService.Object, mockSettingsLogger.Object, _mockFileDialogService.Object);
+        var settingsViewModel = new SettingsViewModel(_mockSettingsService.Object, mockSettingsLogger.Object);
 
         _viewModel = new MainViewModel(
             _mockLogger.Object,
@@ -46,7 +46,6 @@ public class MainViewModelTests
             _mockMetadataService.Object,
             _mockFileDialogService.Object,
             _mockUacBypassOrchestrator.Object,
-            _mockSettingsService.Object,
             settingsViewModel);
     }
 

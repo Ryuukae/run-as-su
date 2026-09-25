@@ -20,7 +20,6 @@ public partial class MainViewModel : ObservableObject
     private readonly IAppMetadataService _metadataService;
     private readonly IFileDialogService _fileDialogService;
     private readonly IUacBypassOrchestrator _uacOrchestrator;
-    private readonly ISettingsService _settingsService;
 
     [ObservableProperty]
     private ObservableCollection<AppPolicy> _policies = new();
@@ -48,7 +47,6 @@ public partial class MainViewModel : ObservableObject
         IAppMetadataService metadataService,
         IFileDialogService fileDialogService,
         IUacBypassOrchestrator uacOrchestrator,
-        ISettingsService settingsService,
         SettingsViewModel settingsViewModel)
     {
         _logger = logger;
@@ -56,7 +54,6 @@ public partial class MainViewModel : ObservableObject
         _metadataService = metadataService;
         _fileDialogService = fileDialogService;
         _uacOrchestrator = uacOrchestrator;
-        _settingsService = settingsService;
         _settingsViewModel = settingsViewModel;
 
         _currentViewModel = this;
@@ -227,7 +224,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
     /// <summary>
-    /// Generates a UAC bypass shortcut for the selected policy.
+    /// Generates a UAC bypass shortcut for the selected policy on the Desktop.
     /// </summary>
     [RelayCommand]
     public async Task CreateUacShortcutAsync()
@@ -238,25 +235,17 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        StatusMessage = "Creating UAC Bypass shortcut...";
+        StatusMessage = "Creating UAC Bypass shortcut on Desktop...";
 
-        var settingsResult = await _settingsService.GetSettingsAsync();
-        string defaultPath = settingsResult.IsSuccess ? settingsResult.Value.DefaultShortcutLocation : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        // Force creation on Desktop to eliminate path injection vulnerabilities and NTLM leaks via UNC paths.
+        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-        string? shortcutPath = _fileDialogService.ShowSaveFileDialog("Save UAC Bypass Shortcut", defaultPath, SelectedPolicy.ProductName + ".lnk", "Shortcut Files (*.lnk)|*.lnk");
-
-        if (string.IsNullOrWhiteSpace(shortcutPath))
-        {
-            StatusMessage = "Shortcut creation cancelled.";
-            return;
-        }
-
-        var result = await _uacOrchestrator.GenerateUacBypassShortcutAsync(SelectedPolicy, System.IO.Path.GetDirectoryName(shortcutPath) ?? defaultPath);
+        var result = await _uacOrchestrator.GenerateUacBypassShortcutAsync(SelectedPolicy, desktopPath);
 
         if (result.IsSuccess)
         {
-            StatusMessage = "UAC Bypass Shortcut successfully created at: " + shortcutPath;
-            _logger.LogInformation("UAC Bypass Shortcut successfully generated for {Product} at {Path}", SelectedPolicy.ProductName, shortcutPath);
+            StatusMessage = "UAC Bypass Shortcut successfully created on Desktop.";
+            _logger.LogInformation("UAC Bypass Shortcut successfully generated for {Product} at {Path}", SelectedPolicy.ProductName, desktopPath);
         }
         else
         {
