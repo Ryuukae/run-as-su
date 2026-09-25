@@ -30,6 +30,7 @@ public partial class App : Application
                 services.AddSingleton<ISecurityService, SecurityService>();
                 services.AddSingleton<IAppMetadataService, AppMetadataService>();
                 services.AddSingleton<IBackupService, BackupService>();
+                services.AddSingleton<IFileDialogService, RunAsAdminPolMan.Services.WpfFileDialogService>();
 
                 // Register ViewModels
                 services.AddSingleton<RunAsAdminPolMan.ViewModels.MainViewModel>();
@@ -40,12 +41,34 @@ public partial class App : Application
             .Build();
     }
 
+    private System.Threading.Mutex? _instanceMutex;
+
     /// <summary>
     /// Handles the application startup event.
     /// </summary>
     /// <param name="e">Event arguments.</param>
     protected override async void OnStartup(StartupEventArgs e)
     {
+        const string mutexName = "Global\\RunAsAdminPolMan_SingleInstance_Mutex";
+        bool createdNew;
+        try
+        {
+            _instanceMutex = new System.Threading.Mutex(true, mutexName, out createdNew);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // If another user (like a second RDP admin) holds the mutex, we can't open it.
+            // This mathematically proves another instance is already running on the machine.
+            createdNew = false;
+        }
+        
+        if (!createdNew)
+        {
+            MessageBox.Show("Another instance of RunAsAdmin Policy Manager is already running on this machine.", "Instance Already Running", MessageBoxButton.OK, MessageBoxImage.Warning);
+            Current.Shutdown();
+            return;
+        }
+
         await Host.StartAsync();
 
         var mainWindow = Host.Services.GetRequiredService<MainWindow>();
@@ -62,6 +85,19 @@ public partial class App : Application
     {
         await Host.StopAsync();
         Host.Dispose();
+
+        if (_instanceMutex != null)
+        {
+            try
+            {
+                _instanceMutex.ReleaseMutex();
+            }
+            catch (Exception)
+            {
+                // Ignore if we didn't own the mutex (e.g. exception during creation)
+            }
+            _instanceMutex.Dispose();
+        }
 
         base.OnExit(e);
     }

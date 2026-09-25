@@ -4,11 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="clr-namespace:RunAsAdminPolMan.ViewModels"
+        xmlns:converters="clr-namespace:RunAsAdminPolMan.Converters"
         mc:Ignorable="d"
         Title="RunAsAdmin Policy Manager" Height="600" Width="900"
         Background="#282828" Foreground="#ebdbb2"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        AllowDrop="True" Drop="Window_Drop">
     <Window.Resources>
+        <!-- Converters -->
+        <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
+
         <!-- Gruvbox DataGrid Styling -->
         <Style TargetType="DataGrid">
             <Setter Property="Background" Value="#282828"/>
@@ -84,7 +89,7 @@
         <!-- Menu Bar -->
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="Add Policy..." Command="{Binding LoadPoliciesCommand}"/> <!-- Will wire to Add via dialog later -->
+                <MenuItem Header="Add Policy..." Command="{Binding OpenFileDialogAndAddPoliciesCommand}"/>
                 <MenuItem Header="Remove Policy" Command="{Binding RemovePolicyCommand}"/>
                 <Separator Background="#504945"/>
                 <MenuItem Header="E_xit"/>
@@ -101,6 +106,7 @@
         <!-- ToolBar -->
         <ToolBarTray DockPanel.Dock="Top" Background="#3c3836">
             <ToolBar>
+                <Button Content="Add Policy" Command="{Binding OpenFileDialogAndAddPoliciesCommand}"/>
                 <Button Content="Refresh" Command="{Binding LoadPoliciesCommand}"/>
                 <Button Content="Remove Selected" Command="{Binding RemovePolicyCommand}"/>
                 <Separator/>
@@ -115,13 +121,24 @@
                 <TextBlock Text="{Binding StatusMessage}"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
-                <TextBlock Text="{Binding Policies.Count, StringFormat='Items: {0}'}"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding CurrentScope, StringFormat='Active Scope: {0}'}" FontWeight="Bold" Foreground="#fabd2f" Margin="0,0,15,0"/>
+                    <TextBlock Text="{Binding Policies.Count, StringFormat='Items: {0}'}"/>
+                </StackPanel>
             </StatusBarItem>
         </StatusBar>
 
         <!-- Massive DataGrid (NirSoft Style) -->
         <DataGrid ItemsSource="{Binding Policies}" SelectedItem="{Binding SelectedPolicy}">
             <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Icon" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding IconBytes, Converter={StaticResource ByteArrayToImageConverter}}" 
+                                   Width="16" Height="16" Stretch="Uniform"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Scope" Binding="{Binding Scope}" Width="Auto"/>
                 <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="Auto"/>
                 <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" Width="Auto"/>

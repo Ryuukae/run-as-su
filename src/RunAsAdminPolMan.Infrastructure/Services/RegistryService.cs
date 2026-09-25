@@ -84,6 +84,11 @@ public class RegistryService : IRegistryService
                 return Result.Fail(new Error("INVALID_PATH", "The file path cannot be empty."));
             }
 
+            if (!System.IO.Path.IsPathRooted(filePath))
+            {
+                return Result.Fail(new Error("INVALID_PATH", "The Windows Registry requires an absolute file path for AppCompat flags."));
+            }
+
             try
             {
                 RegistryKey baseKey = GetBaseKey(scope);

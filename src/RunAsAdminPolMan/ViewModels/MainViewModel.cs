@@ -13,6 +13,7 @@ public partial class MainViewModel : ObservableObject
 {
     private readonly IRegistryService _registryService;
     private readonly IAppMetadataService _metadataService;
+    private readonly IFileDialogService _fileDialogService;
 
     [ObservableProperty]
     private ObservableCollection<AppPolicy> _policies = new();
@@ -29,10 +30,11 @@ public partial class MainViewModel : ObservableObject
     /// <summary>
     /// Initializes a new instance of the <see cref="MainViewModel"/> class.
     /// </summary>
-    public MainViewModel(IRegistryService registryService, IAppMetadataService metadataService)
+    public MainViewModel(IRegistryService registryService, IAppMetadataService metadataService, IFileDialogService fileDialogService)
     {
         _registryService = registryService;
         _metadataService = metadataService;
+        _fileDialogService = fileDialogService;
     }
 
     /// <summary>
@@ -48,11 +50,21 @@ public partial class MainViewModel : ObservableObject
         {
             var policyList = result.Value.ToList();
             
-            // Enrich with metadata concurrently
+            // Throttle to prevent ThreadPool starvation and OOM crashes on massive registries
+            using var semaphore = new System.Threading.SemaphoreSlim(10);
+            
             var enrichTasks = policyList.Select(async p => 
             {
-                var metaResult = await _metadataService.ExtractMetadataAsync(p);
-                return metaResult.IsSuccess ? metaResult.Value : p;
+                await semaphore.WaitAsync();
+                try
+                {
+                    var metaResult = await _metadataService.ExtractMetadataAsync(p);
+                    return metaResult.IsSuccess ? metaResult.Value : p;
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
             });
             
             var enrichedList = await Task.WhenAll(enrichTasks);
@@ -89,22 +101,36 @@ public partial class MainViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Adds a new policy to the registry.
+    /// Adds multiple new policies to the registry and refreshes the view once.
     /// </summary>
-    /// <param name="filePath">The file path to add.</param>
+    /// <param name="filePaths">The collection of file paths to add.</param>
     [RelayCommand]
-    public async Task AddPolicyAsync(string filePath)
+    public async Task AddPoliciesAsync(System.Collections.Generic.IEnumerable<string> filePaths)
     {
-        StatusMessage = $"Enabling policy for {filePath}...";
-        var result = await _registryService.SetPolicyAsync(filePath, enable: true, CurrentScope);
+        StatusMessage = "Enabling policies...";
+        bool anySuccess = false;
+        string? lastError = null;
 
-        if (result.IsSuccess)
+        foreach (var path in filePaths)
+        {
+            var result = await _registryService.SetPolicyAsync(path, enable: true, CurrentScope);
+            if (result.IsSuccess)
+            {
+                anySuccess = true;
+            }
+            else
+            {
+                lastError = result.Error?.Message;
+            }
+        }
+
+        if (anySuccess)
         {
             await LoadPoliciesCommand.ExecuteAsync(null);
         }
-        else
+        else if (lastError != null)
         {
-            StatusMessage = $"Error: {result.Error?.Message}";
+            StatusMessage = $"Error: {lastError}";
         }
     }
     
@@ -116,5 +142,18 @@ public partial class MainViewModel : ObservableObject
     {
         CurrentScope = CurrentScope == PolicyScope.CurrentUser ? PolicyScope.LocalMachine : PolicyScope.CurrentUser;
         await LoadPoliciesCommand.ExecuteAsync(null);
+    }
+
+    /// <summary>
+    /// Opens the native file dialog to manually select and add policies.
+    /// </summary>
+    [RelayCommand]
+    public async Task OpenFileDialogAndAddPoliciesAsync()
+    {
+        var files = _fileDialogService.ShowOpenExeDialog();
+        if (files != null && files.Length > 0)
+        {
+            await AddPoliciesCommand.ExecuteAsync(files);
+        }
     }
 }

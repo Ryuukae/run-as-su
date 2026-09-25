@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,14 @@ namespace RunAsAdminPolMan;
 /// </summary>
 public partial class MainWindow : Window
 {
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool ChangeWindowMessageFilter(uint message, uint dwFlag);
+
+    private const uint WM_DROPFILES = 0x0233;
+    private const uint WM_COPYDATA = 0x004A;
+    private const uint WM_COPYGLOBALDATA = 0x0049;
+    private const uint MSGFLT_ADD = 1;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindow"/> class.
     /// </summary>
@@ -25,6 +34,31 @@ public partial class MainWindow : Window
         DataContext = viewModel;
         
         // Auto-load policies on startup securely through the IAsyncRelayCommand
-        Loaded += async (s, e) => await viewModel.LoadPoliciesCommand.ExecuteAsync(null);
+        Loaded += async (s, e) => 
+        {
+            // CRITICAL WIN32 FIX: Bypass User Interface Privilege Isolation (UIPI) firewall.
+            // Since this app runs Elevated, Windows physically blocks Drag-and-Drop from Explorer.
+            ChangeWindowMessageFilter(WM_DROPFILES, MSGFLT_ADD);
+            ChangeWindowMessageFilter(WM_COPYDATA, MSGFLT_ADD);
+            ChangeWindowMessageFilter(WM_COPYGLOBALDATA, MSGFLT_ADD);
+
+            await viewModel.LoadPoliciesCommand.ExecuteAsync(null);
+        };
+    }
+
+    private async void Window_Drop(object sender, DragEventArgs e)
+    {
+        if (DataContext is not RunAsAdminPolMan.ViewModels.MainViewModel vm) return;
+        
+        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var exeFiles = System.Linq.Enumerable.Where(files, f => f.EndsWith(".exe", System.StringComparison.OrdinalIgnoreCase)).ToArray();
+            
+            if (exeFiles.Length > 0)
+            {
+                await vm.AddPoliciesCommand.ExecuteAsync(exeFiles);
+            }
+        }
     }
 }
