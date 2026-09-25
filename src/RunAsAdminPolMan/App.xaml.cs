@@ -31,6 +31,9 @@ public partial class App : Application
                 services.AddSingleton<IAppMetadataService, AppMetadataService>();
                 services.AddSingleton<IBackupService, BackupService>();
 
+                // Register ViewModels
+                services.AddSingleton<RunAsAdminPolMan.ViewModels.MainViewModel>();
+
                 // Register Views
                 services.AddTransient<MainWindow>();
             })
