@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "lint:commit": "dotnet husky run --name \"commitlint\" --args commit_msg.txt",
+    "lint:commit": "dotnet husky run --name \"commitlint\" --args _planning/commit_msg.txt",
     "lint:code": "dotnet format",
     "build": "dotnet build"
   },
