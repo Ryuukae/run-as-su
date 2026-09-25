@@ -1,0 +1,55 @@
+name: "CodeQL Security Scan"
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+  schedule:
+    - cron: '0 0 * * 0' # Weekly scan
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: windows-latest
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+        cache: true
+        cache-dependency-path: '**/packages.lock.json'
+
+    # Hardcoded to v3 to guarantee C# 12 / .NET 8 semantic compatibility
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        
+    - name: Restore Dependencies
+      run: dotnet restore RunAsAdminPolMan.slnx
+
+    # Explicit manual build bypassing PublishSingleFile trimming traps
+    - name: Build Application
+      run: dotnet build RunAsAdminPolMan.slnx --no-restore -c Release
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}"
