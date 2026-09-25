@@ -50,11 +50,21 @@ public partial class MainViewModel : ObservableObject
         {
             var policyList = result.Value.ToList();
             
-            // Enrich with metadata concurrently
+            // Throttle to prevent ThreadPool starvation and OOM crashes on massive registries
+            using var semaphore = new System.Threading.SemaphoreSlim(10);
+            
             var enrichTasks = policyList.Select(async p => 
             {
-                var metaResult = await _metadataService.ExtractMetadataAsync(p);
-                return metaResult.IsSuccess ? metaResult.Value : p;
+                await semaphore.WaitAsync();
+                try
+                {
+                    var metaResult = await _metadataService.ExtractMetadataAsync(p);
+                    return metaResult.IsSuccess ? metaResult.Value : p;
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
             });
             
             var enrichedList = await Task.WhenAll(enrichTasks);
