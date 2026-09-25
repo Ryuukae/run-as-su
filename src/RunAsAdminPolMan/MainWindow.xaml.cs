@@ -25,17 +25,21 @@ public partial class MainWindow : Window
     private const uint WM_COPYGLOBALDATA = 0x0049;
     private const uint MSGFLT_ADD = 1;
 
+    private readonly Microsoft.Extensions.Logging.ILogger<MainWindow> _logger;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MainWindow"/> class.
     /// </summary>
-    public MainWindow(RunAsAdminPolMan.ViewModels.MainViewModel viewModel)
+    public MainWindow(RunAsAdminPolMan.ViewModels.MainViewModel viewModel, Microsoft.Extensions.Logging.ILogger<MainWindow> logger)
     {
         InitializeComponent();
         DataContext = viewModel;
+        _logger = logger;
 
         // Auto-load policies on startup securely through the IAsyncRelayCommand
         Loaded += async (s, e) =>
         {
+            _logger.LogInformation("MainWindow loaded. Bypassing UIPI for Drag-and-Drop and loading policies.");
             // CRITICAL WIN32 FIX: Bypass User Interface Privilege Isolation (UIPI) firewall.
             // Since this app runs Elevated, Windows physically blocks Drag-and-Drop from Explorer.
             ChangeWindowMessageFilter(WM_DROPFILES, MSGFLT_ADD);
@@ -57,8 +61,40 @@ public partial class MainWindow : Window
 
             if (exeFiles.Length > 0)
             {
+                _logger.LogInformation("Drag-and-Drop triggered. Executing AddPoliciesCommand for {Count} executable(s).", exeFiles.Length);
                 await vm.AddPoliciesCommand.ExecuteAsync(exeFiles);
             }
+            else
+            {
+                _logger.LogWarning("Drag-and-Drop triggered, but no valid executable files were found in the payload.");
+            }
         }
+    }
+
+    /// <summary>
+    /// Handles the click event for the custom minimize button.
+    /// </summary>
+    private void Minimize_Click(object sender, RoutedEventArgs e)
+    {
+        _logger.LogTrace("User minimized the window via custom WindowChrome.");
+        WindowState = WindowState.Minimized;
+    }
+
+    /// <summary>
+    /// Handles the click event for the custom maximize/restore button.
+    /// </summary>
+    private void Maximize_Click(object sender, RoutedEventArgs e)
+    {
+        _logger.LogTrace("User toggled window maximization state via custom WindowChrome.");
+        WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+    }
+
+    /// <summary>
+    /// Handles the click event for the custom close button.
+    /// </summary>
+    private void Close_Click(object sender, RoutedEventArgs e)
+    {
+        _logger.LogInformation("User clicked the custom close button. Shutting down application.");
+        Close();
     }
 }
