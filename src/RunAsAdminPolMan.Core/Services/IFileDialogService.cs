@@ -10,4 +10,8 @@ public interface IFileDialogService
     /// </summary>
     /// <returns>An array of selected file paths, or null if cancelled.</returns>
     string[]? ShowOpenExeDialog();
+    /// <summary>
+    /// Prompts the user to save a file.
+    /// </summary>
+    string? ShowSaveFileDialog(string title, string defaultPath, string defaultFileName, string filter);
 }

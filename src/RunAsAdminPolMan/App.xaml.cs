@@ -69,6 +69,10 @@ public partial class App : Application
                 services.AddSingleton<ISecurityService, SecurityService>();
                 services.AddSingleton<IAppMetadataService, AppMetadataService>();
                 services.AddSingleton<IBackupService, BackupService>();
+                services.AddSingleton<ISettingsService, JsonSettingsService>();
+                services.AddSingleton<ITaskSchedulerService, TaskSchedulerService>();
+                services.AddSingleton<IShortcutService, WshShortcutService>();
+                services.AddSingleton<IUacBypassOrchestrator, UacBypassOrchestrator>();
                 services.AddSingleton<IFileDialogService, RunAsAdminPolMan.Services.WpfFileDialogService>();
 
                 // Register ViewModels

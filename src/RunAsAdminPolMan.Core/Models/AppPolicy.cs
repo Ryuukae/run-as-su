@@ -34,4 +34,8 @@ public record AppPolicy
     /// Gets the registry scope where this policy resides.
     /// </summary>
     public PolicyScope Scope { get; init; }
+    /// <summary>
+    /// Gets the arguments to pass to the executable.
+    /// </summary>
+    public string Arguments { get; init; } = string.Empty;
 }

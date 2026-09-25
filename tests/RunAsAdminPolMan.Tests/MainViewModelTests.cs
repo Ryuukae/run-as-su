@@ -24,6 +24,8 @@ public class MainViewModelTests
     private readonly Mock<IRegistryService> _mockRegistryService;
     private readonly Mock<IAppMetadataService> _mockMetadataService;
     private readonly Mock<IFileDialogService> _mockFileDialogService;
+    private readonly Mock<IUacBypassOrchestrator> _mockUacBypassOrchestrator;
+    private readonly Mock<ISettingsService> _mockSettingsService;
     private readonly MainViewModel _viewModel;
 
     public MainViewModelTests()
@@ -32,12 +34,16 @@ public class MainViewModelTests
         _mockRegistryService = new Mock<IRegistryService>();
         _mockMetadataService = new Mock<IAppMetadataService>();
         _mockFileDialogService = new Mock<IFileDialogService>();
+        _mockUacBypassOrchestrator = new Mock<IUacBypassOrchestrator>();
+        _mockSettingsService = new Mock<ISettingsService>();
 
         _viewModel = new MainViewModel(
             _mockLogger.Object,
             _mockRegistryService.Object,
             _mockMetadataService.Object,
-            _mockFileDialogService.Object);
+            _mockFileDialogService.Object,
+            _mockUacBypassOrchestrator.Object,
+            _mockSettingsService.Object);
     }
 
     [Fact]

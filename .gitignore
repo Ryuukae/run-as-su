@@ -482,3 +482,4 @@ $RECYCLE.BIN/
 *.swp
 _planning/
 .vscode/
+test_publish/
