@@ -20,9 +20,6 @@ public partial class SettingsViewModel : ObservableObject
     private readonly ILogger<SettingsViewModel> _logger;
 
     [ObservableProperty]
-    private string _defaultShortcutLocation = string.Empty;
-
-    [ObservableProperty]
     private string _statusMessage = string.Empty;
 
     /// <summary>
@@ -45,7 +42,6 @@ public partial class SettingsViewModel : ObservableObject
 
         if (result.IsSuccess && result.Value != null)
         {
-            DefaultShortcutLocation = result.Value.DefaultShortcutLocation;
             StatusMessage = "Settings loaded.";
         }
         else
@@ -62,10 +58,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         _logger.LogInformation("Saving settings from SettingsViewModel.");
 
-        var settings = new AppSettings
-        {
-            DefaultShortcutLocation = DefaultShortcutLocation
-        };
+        var settings = new AppSettings();
 
         var result = await _settingsService.SaveSettingsAsync(settings);
 

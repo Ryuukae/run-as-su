@@ -60,4 +60,22 @@ public class WpfFileDialogService : IFileDialogService
 
         return null;
     }
+
+    /// <inheritdoc/>
+    public string? ShowOpenFolderDialog(string defaultPath)
+    {
+        _logger.LogInformation("Opening OpenFolderDialog at: {Path}", defaultPath);
+        var dialog = new OpenFolderDialog
+        {
+            Title = "Select Default Export Directory",
+            InitialDirectory = defaultPath
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            return dialog.FolderName;
+        }
+
+        return null;
+    }
 }

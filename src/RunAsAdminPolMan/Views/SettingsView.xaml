@@ -1,0 +1,24 @@
+<UserControl x:Class="RunAsAdminPolMan.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Text="Settings Configuration" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+        
+        <TextBlock Grid.Row="1" Text="No Configurable Settings Available" Foreground="#83a598" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+        <TextBlock Grid.Row="2" Text="All architectural settings are strictly hardcoded to guarantee zero-trust path integrity and prevent NTLM leaking via UNC payload injection." Foreground="#ebdbb2" FontSize="14" TextWrapping="Wrap" Margin="0,0,0,20"/>
+        
+        <Button Grid.Row="3" Content="Save Configuration" Command="{Binding SaveSettingsCommand}" Width="150" HorizontalAlignment="Left" Padding="10,8" Background="#458588"/>
+    </Grid>
+</UserControl>

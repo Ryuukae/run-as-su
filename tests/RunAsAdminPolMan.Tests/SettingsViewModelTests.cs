@@ -32,7 +32,7 @@ public class SettingsViewModelTests
     public async Task LoadSettingsAsync_OnSuccess_PopulatesLocation()
     {
         // Arrange
-        var mockSettings = new AppSettings { DefaultShortcutLocation = "C:\\MockDesktop" };
+        var mockSettings = new AppSettings();
         _mockSettingsService
             .Setup(s => s.GetSettingsAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result<AppSettings>.Success(mockSettings));
@@ -41,7 +41,6 @@ public class SettingsViewModelTests
         await _viewModel.LoadSettingsAsync();
 
         // Assert
-        _viewModel.DefaultShortcutLocation.Should().Be("C:\\MockDesktop");
         _viewModel.StatusMessage.Should().Be("Settings loaded.");
     }
 
@@ -49,8 +48,6 @@ public class SettingsViewModelTests
     public async Task SaveSettingsAsync_OnSuccess_UpdatesStatus()
     {
         // Arrange
-        _viewModel.DefaultShortcutLocation = "C:\\NewPath";
-
         _mockSettingsService
             .Setup(s => s.SaveSettingsAsync(It.IsAny<AppSettings>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Success());
@@ -60,7 +57,7 @@ public class SettingsViewModelTests
 
         // Assert
         _mockSettingsService.Verify(
-            s => s.SaveSettingsAsync(It.Is<AppSettings>(a => a.DefaultShortcutLocation == "C:\\NewPath"), It.IsAny<CancellationToken>()),
+            s => s.SaveSettingsAsync(It.IsAny<AppSettings>(), It.IsAny<CancellationToken>()),
             Times.Once);
         _viewModel.StatusMessage.Should().Be("Settings saved successfully.");
     }
