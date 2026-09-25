@@ -4,16 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="clr-namespace:RunAsAdminPolMan.ViewModels"
-        xmlns:converters="clr-namespace:RunAsAdminPolMan.Converters"
+        xmlns:views="clr-namespace:RunAsAdminPolMan.Views"
         mc:Ignorable="d"
         Title="RunAsAdmin Policy Manager" Height="600" Width="900"
         Background="#282828" Foreground="#ebdbb2"
         WindowStartupLocation="CenterScreen"
         AllowDrop="True" Drop="Window_Drop">
     <Window.Resources>
-        <!-- Converters -->
-        <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter"/>
-
         <!-- Gruvbox DataGrid Styling -->
         <Style TargetType="DataGrid">
             <Setter Property="Background" Value="#282828"/>
@@ -83,6 +80,14 @@
             <Setter Property="Foreground" Value="#ebdbb2"/>
             <Setter Property="Padding" Value="4"/>
         </Style>
+
+        <!-- ViewModel to View Mappings -->
+        <DataTemplate DataType="{x:Type viewmodels:MainViewModel}">
+            <views:PolicyDataGridView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:SettingsViewModel}">
+            <views:SettingsView />
+        </DataTemplate>
     </Window.Resources>
 
     <DockPanel>
@@ -91,6 +96,8 @@
             <MenuItem Header="_File">
                 <MenuItem Header="Add Policy..." Command="{Binding OpenFileDialogAndAddPoliciesCommand}"/>
                 <MenuItem Header="Remove Policy" Command="{Binding RemovePolicyCommand}"/>
+                <Separator Background="#504945"/>
+                <MenuItem Header="Settings" Command="{Binding ToggleSettingsViewCommand}"/>
                 <Separator Background="#504945"/>
                 <MenuItem Header="E_xit"/>
             </MenuItem>
@@ -112,6 +119,8 @@
                 <Separator/>
                 <Button Content="Toggle Scope" Command="{Binding ToggleScopeCommand}"/>
                 <TextBlock VerticalAlignment="Center" Margin="8,0,0,0" Foreground="#b8bb26" Text="{Binding CurrentScope, StringFormat='Current Scope: {0}'}"/>
+                <Separator/>
+                <Button Content="Settings" Command="{Binding ToggleSettingsViewCommand}"/>
             </ToolBar>
         </ToolBarTray>
 
@@ -128,27 +137,7 @@
             </StatusBarItem>
         </StatusBar>
 
-        <!-- Massive DataGrid (NirSoft Style) -->
-                <DataGrid ItemsSource="{Binding Policies}" SelectedItem="{Binding SelectedPolicy}">
-            <DataGrid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="⚡ Create UAC Bypass Shortcut" Command="{Binding CreateUacShortcutCommand}" />
-                </ContextMenu>
-            </DataGrid.ContextMenu>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Icon" Width="Auto">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image Source="{Binding IconBytes, Converter={StaticResource ByteArrayToImageConverter}}" 
-                                   Width="16" Height="16" Stretch="Uniform"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Scope" Binding="{Binding Scope}" Width="Auto"/>
-                <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="Auto"/>
-                <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" Width="Auto"/>
-                <DataGridTextColumn Header="File Path" Binding="{Binding FilePath}" Width="*"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <!-- Main Content Region -->
+        <ContentControl Content="{Binding CurrentViewModel}" />
     </DockPanel>
 </Window>
