@@ -16,12 +16,9 @@
         
         <TextBlock Text="Settings Configuration" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
         
-        <TextBlock Grid.Row="1" Text="Default UAC Shortcut Export Directory:" FontWeight="SemiBold" Margin="0,0,0,5"/>
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,20">
-            <TextBox Text="{Binding DefaultShortcutLocation, UpdateSourceTrigger=PropertyChanged}" Width="400" Margin="0,0,10,0" Padding="4" Background="#3c3836" Foreground="#ebdbb2" BorderBrush="#504945"/>
-            <Button Content="Browse..." Command="{Binding BrowseShortcutLocationCommand}" Padding="10,4"/>
-        </StackPanel>
+        <TextBlock Grid.Row="1" Text="No Configurable Settings Available" Foreground="#83a598" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+        <TextBlock Grid.Row="2" Text="All architectural settings are strictly hardcoded to guarantee zero-trust path integrity and prevent NTLM leaking via UNC payload injection." Foreground="#ebdbb2" FontSize="14" TextWrapping="Wrap" Margin="0,0,0,20"/>
         
-        <Button Grid.Row="3" Content="Save Settings" Command="{Binding SaveSettingsCommand}" Width="150" HorizontalAlignment="Left" Padding="10,8" Background="#458588"/>
+        <Button Grid.Row="3" Content="Save Configuration" Command="{Binding SaveSettingsCommand}" Width="150" HorizontalAlignment="Left" Padding="10,8" Background="#458588"/>
     </Grid>
 </UserControl>

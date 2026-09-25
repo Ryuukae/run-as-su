@@ -18,10 +18,6 @@ public partial class SettingsViewModel : ObservableObject
 {
     private readonly ISettingsService _settingsService;
     private readonly ILogger<SettingsViewModel> _logger;
-    private readonly IFileDialogService _fileDialogService;
-
-    [ObservableProperty]
-    private string _defaultShortcutLocation = string.Empty;
 
     [ObservableProperty]
     private string _statusMessage = string.Empty;
@@ -29,26 +25,10 @@ public partial class SettingsViewModel : ObservableObject
     /// <summary>
     /// Initializes a new instance of the <see cref="SettingsViewModel"/> class.
     /// </summary>
-    public SettingsViewModel(ISettingsService settingsService, ILogger<SettingsViewModel> logger, IFileDialogService fileDialogService)
+    public SettingsViewModel(ISettingsService settingsService, ILogger<SettingsViewModel> logger)
     {
         _settingsService = settingsService;
         _logger = logger;
-        _fileDialogService = fileDialogService;
-    }
-
-    /// <summary>
-    /// Opens the folder dialog to select a new shortcut location.
-    /// </summary>
-    [RelayCommand]
-    public void BrowseShortcutLocation()
-    {
-        _logger.LogInformation("Opening folder browser for shortcut location.");
-        var path = _fileDialogService.ShowOpenFolderDialog(DefaultShortcutLocation);
-        if (!string.IsNullOrWhiteSpace(path))
-        {
-            DefaultShortcutLocation = path;
-            StatusMessage = "Directory updated.";
-        }
     }
 
     /// <summary>
@@ -62,7 +42,6 @@ public partial class SettingsViewModel : ObservableObject
 
         if (result.IsSuccess && result.Value != null)
         {
-            DefaultShortcutLocation = result.Value.DefaultShortcutLocation;
             StatusMessage = "Settings loaded.";
         }
         else
@@ -79,10 +58,7 @@ public partial class SettingsViewModel : ObservableObject
     {
         _logger.LogInformation("Saving settings from SettingsViewModel.");
 
-        var settings = new AppSettings
-        {
-            DefaultShortcutLocation = DefaultShortcutLocation
-        };
+        var settings = new AppSettings();
 
         var result = await _settingsService.SaveSettingsAsync(settings);
 
