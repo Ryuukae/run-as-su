@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/RunAsAdminPolMan.CLI/RunAsAdminPolMan.CLI.csproj" />
     <Project Path="src/RunAsAdminPolMan.Core/RunAsAdminPolMan.Core.csproj" />
     <Project Path="src/RunAsAdminPolMan.Infrastructure/RunAsAdminPolMan.Infrastructure.csproj" />
     <Project Path="src/RunAsAdminPolMan/RunAsAdminPolMan.csproj" />
