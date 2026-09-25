@@ -27,17 +27,16 @@
     </Style>
     
     <Style TargetType="MenuItem">
-        <Setter Property="Foreground" Value="{StaticResource FgBrush}"/>
-    </Style>
-
-    <Style TargetType="ToolBarTray">
-        <Setter Property="Background" Value="{StaticResource Bg1Brush}"/>
-    </Style>
-
-    <Style TargetType="ToolBar">
         <Setter Property="Background" Value="{StaticResource Bg1Brush}"/>
         <Setter Property="Foreground" Value="{StaticResource FgBrush}"/>
     </Style>
+
+    <Style TargetType="ContextMenu">
+        <Setter Property="Background" Value="{StaticResource Bg1Brush}"/>
+        <Setter Property="Foreground" Value="{StaticResource FgBrush}"/>
+    </Style>
+
+
 
     <Style TargetType="Button">
         <Setter Property="Background" Value="{StaticResource Bg2Brush}"/>

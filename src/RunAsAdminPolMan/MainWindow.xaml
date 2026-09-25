@@ -62,19 +62,17 @@
                 </MenuItem>
             </Menu>
 
-            <!-- ToolBar -->
-            <ToolBarTray DockPanel.Dock="Top">
-                <ToolBar>
-                    <Button Content="Add Policy" Command="{Binding OpenFileDialogAndAddPoliciesCommand}"/>
-                    <Button Content="Refresh" Command="{Binding LoadPoliciesCommand}"/>
-                    <Button Content="Remove Selected" Command="{Binding RemovePolicyCommand}"/>
-                    <Separator/>
-                    <Button Content="Toggle Scope" Command="{Binding ToggleScopeCommand}"/>
-                    <TextBlock VerticalAlignment="Center" Margin="8,0,0,0" Foreground="#b8bb26" Text="{Binding CurrentScope, StringFormat='Current Scope: {0}'}"/>
-                    <Separator/>
-                    <Button Content="Settings" Command="{Binding ToggleSettingsViewCommand}"/>
-                </ToolBar>
-            </ToolBarTray>
+            <!-- ToolBar Replacement -->
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Background="#3c3836" Padding="4">
+                <Button Content="Add Policy" Command="{Binding OpenFileDialogAndAddPoliciesCommand}"/>
+                <Button Content="Refresh" Command="{Binding LoadPoliciesCommand}"/>
+                <Button Content="Remove Selected" Command="{Binding RemovePolicyCommand}"/>
+                <Separator Margin="4,0" Width="2"/>
+                <Button Content="Toggle Scope" Command="{Binding ToggleScopeCommand}"/>
+                <TextBlock VerticalAlignment="Center" Margin="8,0,0,0" Foreground="#b8bb26" Text="{Binding CurrentScope, StringFormat='Current Scope: {0}'}"/>
+                <Separator Margin="8,0,4,0" Width="2"/>
+                <Button Content="Settings" Command="{Binding ToggleSettingsViewCommand}"/>
+            </StackPanel>
 
             <!-- Status Bar -->
             <StatusBar DockPanel.Dock="Bottom">
