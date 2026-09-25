@@ -71,11 +71,12 @@ public static class Program
         // --- Handlers ---
         enableCommand.SetHandler(async (path, scope) => 
         {
+            var absolutePath = Path.GetFullPath(path);
             var registry = host.Services.GetRequiredService<IRegistryService>();
-            var result = await registry.SetPolicyAsync(path, enable: true, scope);
+            var result = await registry.SetPolicyAsync(absolutePath, enable: true, scope);
             if (result.IsSuccess)
             {
-                Console.WriteLine($"[SUCCESS] Enabled RunAsAdmin for: {path} ({scope})");
+                Console.WriteLine($"[SUCCESS] Enabled RunAsAdmin for: {absolutePath} ({scope})");
             }
             else
             {
@@ -86,11 +87,12 @@ public static class Program
 
         disableCommand.SetHandler(async (path, scope) => 
         {
+            var absolutePath = Path.GetFullPath(path);
             var registry = host.Services.GetRequiredService<IRegistryService>();
-            var result = await registry.SetPolicyAsync(path, enable: false, scope);
+            var result = await registry.SetPolicyAsync(absolutePath, enable: false, scope);
             if (result.IsSuccess)
             {
-                Console.WriteLine($"[SUCCESS] Disabled RunAsAdmin for: {path} ({scope})");
+                Console.WriteLine($"[SUCCESS] Disabled RunAsAdmin for: {absolutePath} ({scope})");
             }
             else
             {
