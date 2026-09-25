@@ -24,7 +24,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         DataContext = viewModel;
         
-        // Auto-load policies on startup
-        Loaded += async (s, e) => await viewModel.LoadPoliciesAsync();
+        // Auto-load policies on startup securely through the IAsyncRelayCommand
+        Loaded += async (s, e) => await viewModel.LoadPoliciesCommand.ExecuteAsync(null);
     }
 }

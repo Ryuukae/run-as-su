@@ -92,6 +92,7 @@ public partial class MainViewModel : ObservableObject
     /// Adds a new policy to the registry.
     /// </summary>
     /// <param name="filePath">The file path to add.</param>
+    [RelayCommand]
     public async Task AddPolicyAsync(string filePath)
     {
         StatusMessage = $"Enabling policy for {filePath}...";
@@ -99,7 +100,7 @@ public partial class MainViewModel : ObservableObject
 
         if (result.IsSuccess)
         {
-            await LoadPoliciesAsync();
+            await LoadPoliciesCommand.ExecuteAsync(null);
         }
         else
         {
@@ -114,6 +115,6 @@ public partial class MainViewModel : ObservableObject
     public async Task ToggleScopeAsync()
     {
         CurrentScope = CurrentScope == PolicyScope.CurrentUser ? PolicyScope.LocalMachine : PolicyScope.CurrentUser;
-        await LoadPoliciesAsync();
+        await LoadPoliciesCommand.ExecuteAsync(null);
     }
 }

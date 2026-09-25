@@ -122,9 +122,9 @@
         <!-- Massive DataGrid (NirSoft Style) -->
         <DataGrid ItemsSource="{Binding Policies}" SelectedItem="{Binding SelectedPolicy}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Scope" Binding="{Binding Scope}" Width="SizeToCells"/>
-                <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="SizeToCells"/>
-                <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" Width="SizeToCells"/>
+                <DataGridTextColumn Header="Scope" Binding="{Binding Scope}" Width="Auto"/>
+                <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="Auto"/>
+                <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" Width="Auto"/>
                 <DataGridTextColumn Header="File Path" Binding="{Binding FilePath}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
