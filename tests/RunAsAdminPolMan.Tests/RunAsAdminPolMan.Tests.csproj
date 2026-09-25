@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\RunAsAdminPolMan.Core\RunAsAdminPolMan.Core.csproj" />
     <ProjectReference Include="..\..\src\RunAsAdminPolMan\RunAsAdminPolMan.csproj" />
+    <ProjectReference Include="..\..\src\RunAsAdminPolMan.Infrastructure\RunAsAdminPolMan.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
