@@ -62,7 +62,7 @@ public class TaskSchedulerService : ITaskSchedulerService
                 td.Principal.RunLevel = TaskRunLevel.Highest;
                 td.Principal.LogonType = TaskLogonType.InteractiveToken;
 
-                td.Actions.Add(new ExecAction(policy.FilePath, null, Path.GetDirectoryName(policy.FilePath)));
+                td.Actions.Add(new ExecAction(policy.FilePath, string.IsNullOrWhiteSpace(policy.Arguments) ? null : policy.Arguments, Path.GetDirectoryName(policy.FilePath)));
 
                 // Disable power restrictions (run on battery)
                 td.Settings.DisallowStartIfOnBatteries = false;
