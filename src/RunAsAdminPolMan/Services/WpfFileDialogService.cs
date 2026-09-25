@@ -41,4 +41,23 @@ public class WpfFileDialogService : IFileDialogService
         _logger.LogDebug("User canceled OpenFileDialog.");
         return null;
     }
+    /// <inheritdoc/>
+    public string? ShowSaveFileDialog(string title, string defaultPath, string defaultFileName, string filter)
+    {
+        _logger.LogInformation("Opening SaveFileDialog: {Title}", title);
+        var dialog = new Microsoft.Win32.SaveFileDialog
+        {
+            Title = title,
+            InitialDirectory = defaultPath,
+            FileName = defaultFileName,
+            Filter = filter
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            return dialog.FileName;
+        }
+
+        return null;
+    }
 }
