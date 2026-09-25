@@ -63,7 +63,7 @@
             </Menu>
 
             <!-- ToolBar Replacement -->
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Background="#3c3836" Padding="4">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Background="#3c3836">
                 <Button Content="Add Policy" Command="{Binding OpenFileDialogAndAddPoliciesCommand}"/>
                 <Button Content="Refresh" Command="{Binding LoadPoliciesCommand}"/>
                 <Button Content="Remove Selected" Command="{Binding RemovePolicyCommand}"/>

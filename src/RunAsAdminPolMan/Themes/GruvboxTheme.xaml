@@ -67,7 +67,6 @@
     <Style TargetType="StatusBar">
         <Setter Property="Background" Value="{StaticResource Bg1Brush}"/>
         <Setter Property="Foreground" Value="{StaticResource FgBrush}"/>
-        <Setter Property="Padding" Value="4"/>
     </Style>
 
     <Style TargetType="Separator">
