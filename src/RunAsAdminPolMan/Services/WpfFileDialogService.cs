@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 
 using RunAsAdminPolMan.Core.Services;
@@ -9,9 +10,21 @@ namespace RunAsAdminPolMan.Services;
 /// </summary>
 public class WpfFileDialogService : IFileDialogService
 {
+    private readonly ILogger<WpfFileDialogService> _logger;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WpfFileDialogService"/> class.
+    /// </summary>
+    /// <param name="logger">The logger instance.</param>
+    public WpfFileDialogService(ILogger<WpfFileDialogService> logger)
+    {
+        _logger = logger;
+    }
+
     /// <inheritdoc/>
     public string[]? ShowOpenExeDialog()
     {
+        _logger.LogDebug("Initializing OpenFileDialog for executables.");
         var dialog = new OpenFileDialog
         {
             Filter = "Executables (*.exe)|*.exe",
@@ -21,9 +34,11 @@ public class WpfFileDialogService : IFileDialogService
 
         if (dialog.ShowDialog() == true && dialog.FileNames.Length > 0)
         {
+            _logger.LogInformation("User selected {Count} files from dialog.", dialog.FileNames.Length);
             return dialog.FileNames;
         }
 
+        _logger.LogDebug("User canceled OpenFileDialog.");
         return null;
     }
 }

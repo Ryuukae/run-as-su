@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
+using Microsoft.Extensions.Logging;
+
 using Moq;
 
 using RunAsAdminPolMan.Core.Models;
@@ -18,6 +20,7 @@ namespace RunAsAdminPolMan.Tests;
 
 public class MainViewModelTests
 {
+    private readonly Mock<ILogger<MainViewModel>> _mockLogger;
     private readonly Mock<IRegistryService> _mockRegistryService;
     private readonly Mock<IAppMetadataService> _mockMetadataService;
     private readonly Mock<IFileDialogService> _mockFileDialogService;
@@ -25,11 +28,13 @@ public class MainViewModelTests
 
     public MainViewModelTests()
     {
+        _mockLogger = new Mock<ILogger<MainViewModel>>();
         _mockRegistryService = new Mock<IRegistryService>();
         _mockMetadataService = new Mock<IAppMetadataService>();
         _mockFileDialogService = new Mock<IFileDialogService>();
 
         _viewModel = new MainViewModel(
+            _mockLogger.Object,
             _mockRegistryService.Object,
             _mockMetadataService.Object,
             _mockFileDialogService.Object);

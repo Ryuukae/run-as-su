@@ -56,6 +56,7 @@ public class RegistryService : IRegistryService
                     if (appCompatKey.GetValue(valueName) is string valueData)
                     {
                         bool isEnabled = valueData.Contains("RUNASADMIN", StringComparison.OrdinalIgnoreCase);
+                        _logger.LogDebug("Read policy: {FilePath} (Enabled: {IsEnabled}) from {Scope}", valueName, isEnabled, scope);
 
                         policies.Add(new AppPolicy
                         {
