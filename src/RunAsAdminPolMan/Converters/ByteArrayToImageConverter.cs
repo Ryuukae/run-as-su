@@ -28,7 +28,7 @@ public class ByteArrayToImageConverter : IValueConverter
     {
         if (value is not byte[] rawBytes || rawBytes.Length == 0)
         {
-            return null;
+            return System.Windows.DependencyProperty.UnsetValue;
         }
 
         if (_imageCache.TryGetValue(rawBytes, out var cachedImage))
@@ -51,7 +51,7 @@ public class ByteArrayToImageConverter : IValueConverter
         }
         catch
         {
-            return null;
+            return System.Windows.DependencyProperty.UnsetValue;
         }
     }
 
