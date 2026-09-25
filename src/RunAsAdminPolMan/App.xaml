@@ -6,7 +6,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Space for future external resource dictionaries -->
+                <ResourceDictionary Source="pack://application:,,,/RunAsAdminPolMan;component/Themes/GruvboxTheme.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter" />
         </ResourceDictionary>
