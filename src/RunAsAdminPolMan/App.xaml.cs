@@ -30,6 +30,7 @@ public partial class App : Application
                 services.AddSingleton<ISecurityService, SecurityService>();
                 services.AddSingleton<IAppMetadataService, AppMetadataService>();
                 services.AddSingleton<IBackupService, BackupService>();
+                services.AddSingleton<IFileDialogService, RunAsAdminPolMan.Services.WpfFileDialogService>();
 
                 // Register ViewModels
                 services.AddSingleton<RunAsAdminPolMan.ViewModels.MainViewModel>();
