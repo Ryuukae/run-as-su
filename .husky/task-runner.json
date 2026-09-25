@@ -4,6 +4,16 @@
       "name": "commitlint",
       "command": "dotnet",
       "args": ["husky", "exec", ".husky/csx/commitlint.csx", "--args", "${args}"]
+    },
+    {
+      "name": "format",
+      "command": "dotnet",
+      "args": ["format", "--verify-no-changes"]
+    },
+    {
+      "name": "test",
+      "command": "dotnet",
+      "args": ["test", "--no-build"]
     }
   ]
 }

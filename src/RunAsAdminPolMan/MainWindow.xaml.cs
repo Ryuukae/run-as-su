@@ -32,9 +32,9 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DataContext = viewModel;
-        
+
         // Auto-load policies on startup securely through the IAsyncRelayCommand
-        Loaded += async (s, e) => 
+        Loaded += async (s, e) =>
         {
             // CRITICAL WIN32 FIX: Bypass User Interface Privilege Isolation (UIPI) firewall.
             // Since this app runs Elevated, Windows physically blocks Drag-and-Drop from Explorer.
@@ -49,12 +49,12 @@ public partial class MainWindow : Window
     private async void Window_Drop(object sender, DragEventArgs e)
     {
         if (DataContext is not RunAsAdminPolMan.ViewModels.MainViewModel vm) return;
-        
+
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             var exeFiles = System.Linq.Enumerable.Where(files, f => f.EndsWith(".exe", System.StringComparison.OrdinalIgnoreCase)).ToArray();
-            
+
             if (exeFiles.Length > 0)
             {
                 await vm.AddPoliciesCommand.ExecuteAsync(exeFiles);

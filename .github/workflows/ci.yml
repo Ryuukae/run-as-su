@@ -12,11 +12,15 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
       
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+        cache: true
+        cache-dependency-path: '**/packages.lock.json'
         
     - name: Restore dependencies
       run: dotnet restore
@@ -27,5 +31,11 @@ jobs:
     - name: Build Solution
       run: dotnet build --no-restore
       
-    - name: Run Tests
-      run: dotnet test --no-build --verbosity normal
+    - name: Run Tests with Coverage
+      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage"
+
+    - name: Upload Coverage Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-coverage
+        path: tests/**/TestResults/**/*.xml

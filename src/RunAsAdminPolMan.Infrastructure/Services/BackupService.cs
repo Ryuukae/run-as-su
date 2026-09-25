@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
+
 using RunAsAdminPolMan.Core.Models;
 using RunAsAdminPolMan.Core.Services;
 
@@ -16,7 +18,7 @@ public class BackupService : IBackupService
 {
     private const string RegistryPathHKCU = @"HKCU\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers";
     private const string RegistryPathHKLM = @"HKLM\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers";
-    
+
     private readonly ILogger<BackupService> _logger;
 
     /// <summary>
@@ -37,11 +39,11 @@ public class BackupService : IBackupService
                 string registryPath = scope == PolicyScope.CurrentUser ? RegistryPathHKCU : RegistryPathHKLM;
                 string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                 string fileName = $"RunAsAdmin_Backup_{scope}_{timestamp}.reg";
-                
+
                 // Store backups in AppData or a dedicated folder. For simplicity, we use Documents.
                 string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 string backupDir = Path.Combine(documentsPath, "RunAsAdmin Policy Manager", "Backups");
-                
+
                 if (!Directory.Exists(backupDir))
                 {
                     Directory.CreateDirectory(backupDir);
