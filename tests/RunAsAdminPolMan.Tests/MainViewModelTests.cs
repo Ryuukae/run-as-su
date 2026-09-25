@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using FluentAssertions;
+
 using Moq;
+
 using RunAsAdminPolMan.Core.Models;
 using RunAsAdminPolMan.Core.Services;
 using RunAsAdminPolMan.ViewModels;
+
 using Xunit;
 
 namespace RunAsAdminPolMan.Tests;
@@ -63,7 +67,7 @@ public class MainViewModelTests
     {
         // Arrange
         var files = new[] { "C:\\newapp.exe" };
-        
+
         _mockRegistryService
             .Setup(s => s.SetPolicyAsync(files[0], true, PolicyScope.CurrentUser, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Success());

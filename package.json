@@ -5,7 +5,8 @@
   "scripts": {
     "lint:commit": "dotnet husky run --name \"commitlint\" --args _planning/commit_msg.txt",
     "lint:code": "dotnet format",
-    "build": "dotnet build"
+    "build": "dotnet build",
+    "test:cov": "dotnet test --collect:\"XPlat Code Coverage\" && dotnet reportgenerator -reports:\"tests/**/TestResults/**/*.xml\" -targetdir:\"coverage-report\" -reporttypes:\"Html\" && start coverage-report\\index.html"
   },
   "devDependencies": {
     "semantic-release": "^24.0.0",

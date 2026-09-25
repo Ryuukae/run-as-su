@@ -1,5 +1,7 @@
 using FluentAssertions;
+
 using RunAsAdminPolMan.Core.Models;
+
 using Xunit;
 
 namespace RunAsAdminPolMan.Tests;

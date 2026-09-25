@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
+
 using RunAsAdminPolMan.Core.Models;
 using RunAsAdminPolMan.Core.Services;
 
@@ -54,7 +56,7 @@ public class RegistryService : IRegistryService
                     if (appCompatKey.GetValue(valueName) is string valueData)
                     {
                         bool isEnabled = valueData.Contains("RUNASADMIN", StringComparison.OrdinalIgnoreCase);
-                        
+
                         policies.Add(new AppPolicy
                         {
                             FilePath = valueName,

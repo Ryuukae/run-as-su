@@ -1,6 +1,8 @@
 using System.CommandLine;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using RunAsAdminPolMan.Core.Models;
 using RunAsAdminPolMan.Core.Services;
 using RunAsAdminPolMan.Infrastructure.Services;
@@ -42,7 +44,7 @@ public static class Program
 
         enableCommand.AddArgument(pathArgument);
         enableCommand.AddOption(scopeOption);
-        
+
         disableCommand.AddArgument(pathArgument);
         disableCommand.AddOption(scopeOption);
 
@@ -56,7 +58,7 @@ public static class Program
         var backupCommand = new Command("backup", "Manage registry policy snapshots");
         var createBackupCommand = new Command("create", "Create a new backup snapshot");
         var restoreBackupCommand = new Command("restore", "Restore policies from a backup snapshot");
-        
+
         var backupFileArgument = new Argument<string>("file", "The full path to the backup file");
 
         createBackupCommand.AddOption(scopeOption);
@@ -69,7 +71,7 @@ public static class Program
         rootCommand.AddCommand(backupCommand);
 
         // --- Handlers ---
-        enableCommand.SetHandler(async (path, scope) => 
+        enableCommand.SetHandler(async (path, scope) =>
         {
             var absolutePath = Path.GetFullPath(path);
             var registry = host.Services.GetRequiredService<IRegistryService>();
@@ -85,7 +87,7 @@ public static class Program
             }
         }, pathArgument, scopeOption);
 
-        disableCommand.SetHandler(async (path, scope) => 
+        disableCommand.SetHandler(async (path, scope) =>
         {
             var absolutePath = Path.GetFullPath(path);
             var registry = host.Services.GetRequiredService<IRegistryService>();
@@ -101,14 +103,14 @@ public static class Program
             }
         }, pathArgument, scopeOption);
 
-        listCommand.SetHandler(async (scope) => 
+        listCommand.SetHandler(async (scope) =>
         {
             var registry = host.Services.GetRequiredService<IRegistryService>();
             var result = await registry.GetPoliciesAsync(scope);
             if (result.IsSuccess)
             {
                 Console.WriteLine($"--- RunAsAdmin Policies ({scope}) ---");
-                foreach(var policy in result.Value)
+                foreach (var policy in result.Value)
                 {
                     Console.WriteLine($"- {policy.FilePath}");
                 }
@@ -120,7 +122,7 @@ public static class Program
             }
         }, scopeOption);
 
-        createBackupCommand.SetHandler(async (scope) => 
+        createBackupCommand.SetHandler(async (scope) =>
         {
             var backupService = host.Services.GetRequiredService<IBackupService>();
             var result = await backupService.CreateBackupAsync(scope);
@@ -135,7 +137,7 @@ public static class Program
             }
         }, scopeOption);
 
-        restoreBackupCommand.SetHandler(async (file) => 
+        restoreBackupCommand.SetHandler(async (file) =>
         {
             var backupService = host.Services.GetRequiredService<IBackupService>();
             var result = await backupService.RestoreBackupAsync(file);

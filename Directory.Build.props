@@ -1,11 +1,27 @@
 <Project>
   <PropertyGroup>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Deterministic Builds for Supply-Chain Security -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    
+    <!-- Treat all analyzer warnings as build errors in Release mode -->
+    <TreatWarningsAsErrors Condition="'$(Configuration)' == 'Release'">true</TreatWarningsAsErrors>
+    
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    
     <!-- Disable XML doc warning for test projects -->
     <NoWarn Condition="'$(IsTestProject)' == 'true'">$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
+
+  <!-- Inject MinVer for Assembly Versioning -->
   <ItemGroup>
+    <PackageReference Include="MinVer" Version="5.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- Inject SonarAnalyzer for Non-Test Projects -->
+  <ItemGroup Condition="'$(IsTestProject)' != 'true'">
     <PackageReference Include="SonarAnalyzer.CSharp" Version="9.23.1.88495">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

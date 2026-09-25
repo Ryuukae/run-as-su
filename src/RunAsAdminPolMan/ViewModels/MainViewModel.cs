@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using RunAsAdminPolMan.Core.Models;
 using RunAsAdminPolMan.Core.Services;
 
@@ -45,15 +47,15 @@ public partial class MainViewModel : ObservableObject
     {
         StatusMessage = "Loading policies...";
         var result = await _registryService.GetPoliciesAsync(CurrentScope);
-        
+
         if (result.IsSuccess)
         {
             var policyList = result.Value.ToList();
-            
+
             // Throttle to prevent ThreadPool starvation and OOM crashes on massive registries
             using var semaphore = new System.Threading.SemaphoreSlim(10);
-            
-            var enrichTasks = policyList.Select(async p => 
+
+            var enrichTasks = policyList.Select(async p =>
             {
                 await semaphore.WaitAsync();
                 try
@@ -66,7 +68,7 @@ public partial class MainViewModel : ObservableObject
                     semaphore.Release();
                 }
             });
-            
+
             var enrichedList = await Task.WhenAll(enrichTasks);
 
             Policies = new ObservableCollection<AppPolicy>(enrichedList);
@@ -133,7 +135,7 @@ public partial class MainViewModel : ObservableObject
             StatusMessage = $"Error: {lastError}";
         }
     }
-    
+
     /// <summary>
     /// Toggles the registry scope between HKCU and HKLM.
     /// </summary>

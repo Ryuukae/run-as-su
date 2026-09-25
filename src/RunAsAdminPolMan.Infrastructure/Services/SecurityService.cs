@@ -4,7 +4,9 @@ using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
+
 using RunAsAdminPolMan.Core.Models;
 using RunAsAdminPolMan.Core.Services;
 
@@ -40,7 +42,7 @@ public class SecurityService : ISecurityService
                 // Authenticode signatures are embedded PKCS #7 signatures.
                 // We use X509Certificate.CreateFromSignedFile to check if a signature exists and is structurally valid.
                 using var cert = X509Certificate.CreateFromSignedFile(filePath);
-                
+
                 // For a deeper validation (trust chain), we can instantiate an X509Certificate2 and verify.
                 using var cert2 = new X509Certificate2(cert);
                 bool isValid = cert2.Verify();
