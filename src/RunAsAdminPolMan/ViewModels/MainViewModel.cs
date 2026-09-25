@@ -34,6 +34,11 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string _statusMessage = "Ready";
 
+    [ObservableProperty]
+    private ObservableObject _currentViewModel;
+
+    private readonly SettingsViewModel _settingsViewModel;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MainViewModel"/> class.
     /// </summary>
@@ -43,7 +48,8 @@ public partial class MainViewModel : ObservableObject
         IAppMetadataService metadataService,
         IFileDialogService fileDialogService,
         IUacBypassOrchestrator uacOrchestrator,
-        ISettingsService settingsService)
+        ISettingsService settingsService,
+        SettingsViewModel settingsViewModel)
     {
         _logger = logger;
         _registryService = registryService;
@@ -51,8 +57,32 @@ public partial class MainViewModel : ObservableObject
         _fileDialogService = fileDialogService;
         _uacOrchestrator = uacOrchestrator;
         _settingsService = settingsService;
+        _settingsViewModel = settingsViewModel;
+
+        _currentViewModel = this;
 
         _logger.LogInformation("MainViewModel initialized.");
+    }
+
+    /// <summary>
+    /// Toggles the visible inline view between the main policy grid and the settings menu.
+    /// </summary>
+    [RelayCommand]
+    public async Task ToggleSettingsViewAsync()
+    {
+        if (CurrentViewModel == this)
+        {
+            await _settingsViewModel.LoadSettingsCommand.ExecuteAsync(null);
+            CurrentViewModel = _settingsViewModel;
+            StatusMessage = "Settings configuration opened.";
+            _logger.LogInformation("Navigated to Settings View.");
+        }
+        else
+        {
+            CurrentViewModel = this;
+            StatusMessage = "Ready";
+            _logger.LogInformation("Navigated to Main View.");
+        }
     }
 
     /// <summary>

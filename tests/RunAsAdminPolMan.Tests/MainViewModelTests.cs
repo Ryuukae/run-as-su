@@ -37,13 +37,17 @@ public class MainViewModelTests
         _mockUacBypassOrchestrator = new Mock<IUacBypassOrchestrator>();
         _mockSettingsService = new Mock<ISettingsService>();
 
+        var mockSettingsLogger = new Mock<ILogger<SettingsViewModel>>();
+        var settingsViewModel = new SettingsViewModel(_mockSettingsService.Object, mockSettingsLogger.Object, _mockFileDialogService.Object);
+
         _viewModel = new MainViewModel(
             _mockLogger.Object,
             _mockRegistryService.Object,
             _mockMetadataService.Object,
             _mockFileDialogService.Object,
             _mockUacBypassOrchestrator.Object,
-            _mockSettingsService.Object);
+            _mockSettingsService.Object,
+            settingsViewModel);
     }
 
     [Fact]
